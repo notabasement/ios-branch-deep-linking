@@ -33,6 +33,7 @@
 #import "BranchInstallRequest.h"
 #import "BranchSpotlightUrlRequest.h"
 #import "BranchRegisterViewRequest.h"
+#import "BranchContentDiscoverer.h"
 
 //Fabric
 #import "../Fabric/FABKitProtocol.h"
@@ -242,6 +243,34 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 - (void)setRequestMetadataKey:(NSString *)key value:(NSObject *)value {
     [self.preferenceHelper setRequestMetadataKey:key value:value];
 }
+
+- (void)enableDelayedInit {
+    self.preferenceHelper.shouldWaitForInit = YES;
+    
+    self.useCookieBasedMatching = NO; // Developers delaying init should implement their own SFSafariViewController
+}
+
+- (void)disableDelayedInit {
+    self.preferenceHelper.shouldWaitForInit = NO;
+}
+
+- (NSURL *)getUrlForOnboardingWithRedirectUrl:(NSString *)redirectUrl {
+    return [BNCStrongMatchHelper getUrlForCookieBasedMatchingWithBranchKey:self.branchKey redirectUrl:redirectUrl];
+}
+
+- (void)resumeInit {
+    self.preferenceHelper.shouldWaitForInit = NO;
+    if (self.isInitialized) {
+        NSLog(@"[Branch Error] User session has already been initialized, so resumeInit is aborting.");
+    }
+    else if (![self.requestQueue containsInstallOrOpen]) {
+        NSLog(@"[Branch Error] No install or open request, so resumeInit is aborting.");
+    }
+    else {
+        [self processNextQueueItem];
+    }
+}
+
 
 #pragma mark - InitSession Permutation methods
 
@@ -1066,6 +1095,7 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 #pragma mark - Application State Change methods
 
 - (void)applicationDidBecomeActive {
+    [self clearTimer];
     if (!self.isInitialized && !self.preferenceHelper.shouldWaitForInit && ![self.requestQueue containsInstallOrOpen]) {
         [self initUserSessionAndCallCallback:YES];
     }
@@ -1084,6 +1114,11 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 - (void)callClose {
     if (self.isInitialized) {
         self.isInitialized = NO;
+        
+        BranchContentDiscoverer *contentDiscoverer = [BranchContentDiscoverer getInstance];
+        if (contentDiscoverer) {
+            [contentDiscoverer stopContentDiscoveryTask];
+        }
         
         if (self.preferenceHelper.sessionID && ![self.requestQueue containsClose]) {
             BranchCloseRequest *req = [[BranchCloseRequest alloc] init];
@@ -1109,7 +1144,7 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 - (void)processNextQueueItem {
     dispatch_semaphore_wait(self.processing_sema, DISPATCH_TIME_FOREVER);
     
-    if (self.networkCount == 0 && self.requestQueue.size > 0) {
+    if (self.networkCount == 0 && self.requestQueue.size > 0 && !self.preferenceHelper.shouldWaitForInit) {
         self.networkCount = 1;
         dispatch_semaphore_signal(self.processing_sema);
         
@@ -1326,7 +1361,7 @@ NSString * const BNCShareCompletedEvent = @"Share Completed";
 }
 
 + (NSString *)kitDisplayVersion {
-	return @"0.12.7";
+	return @"0.12.9";
 }
 
 @end

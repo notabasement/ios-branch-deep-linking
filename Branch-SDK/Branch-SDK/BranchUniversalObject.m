@@ -165,13 +165,30 @@
 }
 
 - (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController completion:(shareCompletion)completion {
-    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:nil completion:completion];
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:nil completion:completion orCompletionWithError:nil];
 }
-- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController anchor:(UIBarButtonItem *)anchor completion:(shareCompletion)completion {
-    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController viewOrBarButtonItem:anchor completion:completion];
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController completionWithError:(shareCompletionWithError)completion {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:nil completion:nil orCompletionWithError:completion];
+}
+- (void)showShareSheetWithLinkProperties:(nullable BranchLinkProperties *)linkProperties andShareText:(nullable NSString *)shareText fromViewController:(nullable UIViewController *)viewController anchor:(nullable UIBarButtonItem *)anchor completion:(nullable shareCompletion)completion {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:anchor completion:completion orCompletionWithError:nil];
 }
 
 - (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController viewOrBarButtonItem:(id)viewOrBarButtonItem completion:(shareCompletion)completion {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController viewOrBarButtonItem:anchor completion:completion orCompletionWithError:nil];
+}
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController viewOrBarButtonItem:(id)viewOrBarButtonItem orCompletionWithError:(shareCompletionWithError)completionError {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController viewOrBarButtonItem:anchor completion:nil orCompletionWithError:completionError];
+}
+- (void)showShareSheetWithLinkProperties:(nullable BranchLinkProperties *)linkProperties andShareText:(nullable NSString *)shareText fromViewController:(nullable UIViewController *)viewController anchor:(nullable UIBarButtonItem *)anchor completionWithError:(nullable shareCompletionWithError)completion {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:anchor completion:nil orCompletionWithError:completion];
+}
+
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController anchor:(UIBarButtonItem *)anchor completion:(shareCompletion)completion orCompletionWithError:(shareCompletionWithError)completionError {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController viewOrBarButtonItem:anchor completion:completion orCompletionWithError:completionError]
+}
+
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController viewOrBarButtonItem:(id)viewOrBarButtonItem completion:(shareCompletion)completion orCompletionWithError:(shareCompletionWithError)completionError {
     // Log share initiated event
     [self userCompletedAction:BNCShareInitiatedEvent];
     UIActivityItemProvider *itemProvider = [self getBranchActivityItemWithLinkProperties:linkProperties];
@@ -185,8 +202,9 @@
         shareViewController.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
             // Log share completed event
             [self userCompletedAction:BNCShareCompletedEvent];
-            if (completion) {
-                completion(activityType, completed);
+            if (completion || completionError) {
+                if (completion) { completion(activityType, completed); }
+                else if (completionError) { completionError(activityType, completed, activityError); }
                 [BNCFabricAnswers sendEventWithName:@"Branch Share" andAttributes:[self getDictionaryWithCompleteLinkProperties:linkProperties]];
             }
         };
