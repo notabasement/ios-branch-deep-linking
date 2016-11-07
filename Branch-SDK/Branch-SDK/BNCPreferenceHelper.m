@@ -177,18 +177,25 @@ static NSString * const BNC_BRANCH_FABRIC_APP_KEY_KEY = @"branch_key";
         else if ([ret isKindOfClass:[NSDictionary class]]) {
             self.branchKey = isLive ? ret[@"live"] : ret[@"test"];
         }
+
     } else {
+
         Class fabric = NSClassFromString(@"Fabric");
-        
-        if (fabric) {
+        if ([fabric respondsToSelector:@selector(configurationDictionaryForKitClass:)]) {
+
             NSDictionary *configDictionary = [fabric configurationDictionaryForKitClass:[Branch class]];
             ret = [configDictionary objectForKey:BNC_BRANCH_FABRIC_APP_KEY_KEY];
             
             if ([ret isKindOfClass:[NSString class]]) {
+
                 self.branchKey = ret;
-            }
-            else if ([ret isKindOfClass:[NSDictionary class]]) {
+
+            } else if ([ret isKindOfClass:[NSDictionary class]]) {
+
                 self.branchKey = isLive ? ret[@"live"] : ret[@"test"];
+                if (![self.branchKey isKindOfClass:NSString.class])
+                    self.branchKey = nil;
+
             }
         }
     }
@@ -731,6 +738,8 @@ static NSString * const BNC_BRANCH_FABRIC_APP_KEY_KEY = @"branch_key";
     NSURL *oldURL = [NSURL fileURLWithPath:self.prefsFile_deprecated];
     NSURL *newURL = [self URLForPrefsFile];
 
+    if (!oldURL || !newURL) { return; }
+
     NSError *error = nil;
     [[NSFileManager defaultManager]
         moveItemAtURL:oldURL
@@ -749,7 +758,9 @@ static NSString * const BNC_BRANCH_FABRIC_APP_KEY_KEY = @"branch_key";
 }
 
 + (void) initialize {
-    [self moveOldPrefsFile];
+    if (self == [BNCPreferenceHelper self]) {
+        [self moveOldPrefsFile];
+    }
 }
 
 @end

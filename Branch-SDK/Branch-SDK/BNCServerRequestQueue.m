@@ -303,6 +303,9 @@ NSUInteger const BATCH_WRITE_TIMEOUT = 3;
 + (void) moveOldQueueFile {
     NSURL *oldURL = [NSURL fileURLWithPath:self.queueFile_deprecated];
     NSURL *newURL = [self URLForQueueFile];
+    
+    if (!oldURL || !newURL) { return; }
+    
     NSError *error = nil;
     [[NSFileManager defaultManager]
         moveItemAtURL:oldURL
@@ -321,7 +324,9 @@ NSUInteger const BATCH_WRITE_TIMEOUT = 3;
 }
 
 + (void) initialize {
-    [self moveOldQueueFile];
+    if (self == [BNCServerRequestQueue self]) {
+        [self moveOldQueueFile];
+    }
 }
 
 #pragma mark - Singleton method
