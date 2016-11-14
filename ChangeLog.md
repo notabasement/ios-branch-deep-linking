@@ -1,13 +1,18 @@
 Branch iOS SDK Change Log
 
+- v0.12.16
+  * Branch can now optionally track Apple Search Ad campaign attribution.
+  * Sharing channels have been updated to be human readable and match the Android names.
+  * Cleaned up some warnings in the system log.
+  * Updated TestBed for running devices that run iOS 7.
 
 - v0.12.15
+  * Fixed a potential crash bug: Added a nil checks when moving the preferences file.
   * Check for older versions of the Fabric SDK instead of just crashing (AIS-102).
     - Testing note:  This is a pretty contrived problem that isn't easily testable.
       I stepped through the code with the debugger and it worked.
   * Changed the share activity channel from "com.tinyspeck.chatlyio.share" to "Slack"
     to prevent confusion (AIS-59).
-  * nil checks for moving preferences file
 
 - v0.12.14
   * This release fixes a compile error with Xcode 7.

@@ -2,6 +2,19 @@
 Branch SDK Release Notes
 ========================
 
+####  Branch Version 0.12.16
+Apple Search Ad Attribution
+
+*  Branch can now optionally track Apple Search Ad campaign attribution.
+   See the documentation for using this feature in the README.md section
+   [Apple Search Ad Attribution.](https://github.com/BranchMetrics/ios-branch-deep-linking/blob/master/README.md#apple-search-ads)
+
+*  Check the change log for specific fixes:  [Change log on Github.](https://github.com/BranchMetrics/ios-branch-deep-linking/blob/master/ChangeLog.md)
+
+####  Branch Version 0.12.15
+Fixed a major crash bug.
+
+*  Added a nil checks when moving the preferences file.
 
 ####  Branch Version 0.12.14
 Xcode 7 Support - Wednesday, October 26 2016
