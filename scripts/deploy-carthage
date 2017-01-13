@@ -1,19 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
-#  deploy-carthage  --  Deploy the Branch.framework with Carthage
-#  EB Smith.  November, 2016.
+# deploy-carthage  --  Deploy the Branch.framework with Carthage
+#
+# Edward Smith, November 2016
 
-scriptname=$(basename "BASH_SOURCE[0]")
+scriptname=$(basename "${BASH_SOURCE[0]}")
 scriptpath="${BASH_SOURCE[0]}"
 scriptpath=$(cd "$(dirname "${scriptpath}")" && pwd)
 cd ${scriptpath}/../carthage-files
 
-
 scriptFailed=1
 function finish {
-    if [ $scriptFailed -ne 0 ]
-    then
+    if [ $scriptFailed -ne 0 ]; then
         echo ">>> Error: $scriptname failed!" 1>&2
         exit 1
     fi

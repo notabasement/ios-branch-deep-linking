@@ -1,8 +1,37 @@
 Branch iOS SDK Change Log
 
+- v0.12.24
+  * Updated Fabric files.
+  * Made the release script more robust.
+
+- v0.12.23
+  * Updated the public headers for Carthage to include BNCCommerceEvent.h.
+
+- v0.12.22
+  * Fixed a crash when the root view controller is UINavigationController during strong matching (#539).
+  * Updated documentation.
+  * Warn when a user purchase event conflicts with a commerce event DANA-77 (#538).
+  * Added product categories DANA-75 (#537).
+  * Fixed a potential initialization race condition (#535).
+  * Updated the Branch-TestBed-Swift example.
+  * Fixed problem where getLatestReferringParams was sometimes returning the wrong params (#532).
+
+- v0.12.21
+  * > Beta Release <
+  * Fixed iOS 10.2.2 app install/update reporting (INFRA-1484).
+  * Don't add 'type' or 'duration' to link data if they're 0 (AIS-97).
+  * Made UIApplication use optional so that iMessage extensions could build (GH-#521).
+  * Return faster from the Branch initialization call (GH-#520).
+    - Cached the browserUserAgentString in BNCDeviceInfo.
+    - Made post requests start asynchronously.
+  * Changed SDK_VERSION to BNC_SDK_VERSION (GH-#523).
+  * Added a 'commerce' event for tracking in-app purchases (DANA-39).
+    - Added BNCCommerceEvent.
+    - Added test methods for BNCCommerceEvent use.
+
 - v0.12.20
   * Started the SDK beta program. A beta version of the SDK is now available.
-    - See the Github info here: https://branch.app.link/5HMUVrQeYy 
+    - See the Github info here: https://branch.app.link/5HMUVrQeYy
   * Updated the build script.
   * Merge pull request #517 from brianmichel/bsm/call-javascript-from-main-thread.
   * Fixed and re-applied patches from v0.12.18. These are:
@@ -328,7 +357,7 @@ Branch iOS SDK Change Log
 
 - v0.8.2
   * Fix issue with callbacks being lost on some of the internal requests.
-  * Fix issue with old requests not fitting the new request format, causing crsahes.
+  * Fix issue with old requests not fitting the new request format, causing crashes.
 
 - v0.8.1
   * Fix potential for bad reference when no callback is provided to `redeemRewards` call.

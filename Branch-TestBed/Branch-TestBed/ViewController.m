@@ -60,7 +60,7 @@ NSString *type = @"some type";
     _branchUniversalObject.type = type;
     [_branchUniversalObject addMetadataKey:@"deeplink_text" value:[NSString stringWithFormat:
                                                                    @"This text was embedded as data in a Branch link with the following characteristics:\n\n  canonicalUrl: %@\n  title: %@\n  contentDescription: %@\n  imageUrl: %@\n", canonicalUrl, contentTitle, contentDescription, imageUrl]];
-    [self refreshRewardPoints];
+   // [self refreshRewardPoints];
 }
 
 
@@ -198,6 +198,43 @@ NSString *type = @"some type";
     }];
 }
 
+- (IBAction) sendCommerceEvent:(id)sender {
+    BNCProduct *product = [BNCProduct new];
+    product.price = [NSDecimalNumber decimalNumberWithString:@"1000.99"];
+    product.sku = @"acme007";
+    product.name = @"Acme brand 1 ton weight";
+    product.quantity = @(1.0);
+    product.brand = @"Acme";
+    product.category = BNCProductCategoryMedia;
+    product.variant = @"Lite Weight";
+
+    BNCCommerceEvent *commerceEvent = [BNCCommerceEvent new];
+    commerceEvent.revenue = [NSDecimalNumber decimalNumberWithString:@"1101.99"];
+    commerceEvent.currency = @"Smackeroos";
+    commerceEvent.transactionID = @"tr00x8";
+    commerceEvent.shipping = [NSDecimalNumber decimalNumberWithString:@"100.00"];
+    commerceEvent.tax = [NSDecimalNumber decimalNumberWithString:@"1.00"];
+    commerceEvent.coupon = @"Acme weights coupon";
+    commerceEvent.affiliation = @"ACME by Amazon";
+    commerceEvent.products = @[ product ];
+
+    [[Branch getInstance]
+        sendCommerceEvent:commerceEvent
+        metadata:@{ @"Meta": @"Never meta dog I didn't like." }
+        withCompletion:
+        ^ (NSDictionary *response, NSError *error) {
+			NSString *message =
+				[NSString stringWithFormat:@"Commerce completion called.\nError: %@\n%@", error, response];
+			NSLog(@"%@", message);
+			[[[UIAlertView alloc]
+				initWithTitle:@"Commerce Event"
+				message:message
+				delegate:nil
+				cancelButtonTitle:@"OK"
+				otherButtonTitles:nil]
+					show];
+        }];
+}
 
 //example using callbackWithURLandSpotlightIdentifier
 - (IBAction)registerWithSpotlightButtonTouchUpInside:(id)sender {
@@ -218,7 +255,7 @@ NSString *type = @"some type";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self refreshRewardPoints];
+   // [self refreshRewardPoints];
 }
 
 
