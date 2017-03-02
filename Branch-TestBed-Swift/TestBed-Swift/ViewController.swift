@@ -97,6 +97,23 @@ class ViewController: UITableViewController {
         linkTextField.text = ""
         refreshControlValues()
         refreshEnabledButtons()
+
+        // Add version to footer
+        let footerView = UILabel.init(frame: CGRect.zero);
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"]
+        footerView.text = String(format:"Version %@ / %@ / %@",
+            UIDevice.current.systemVersion,
+            appVersion as! CVarArg,
+            BNC_SDK_VERSION
+        )
+        footerView.font = UIFont.systemFont(ofSize:14.0)
+        footerView.textAlignment = NSTextAlignment.center
+        footerView.textColor = UIColor.darkText
+        footerView.sizeToFit()
+        var box = footerView.bounds
+        box.size.height += 10.0
+        footerView.frame = box
+        self.tableView.tableFooterView = footerView;
     }
     
     func applicationDidBecomeActive() {
@@ -306,13 +323,13 @@ class ViewController: UITableViewController {
     }
     
     @IBAction func sendEventButtonTouchUpInside(_ sender: AnyObject) {
-        var customEventName = "view"
+        var customEventName = "button"
         let branch = Branch.getInstance()
         
         if customEventNameTextField.text != "" {
             customEventName = customEventNameTextField.text!
         }
-        
+
         if customEventMetadata.count == 0 {
             branch?.userCompletedAction(customEventName)
         } else {

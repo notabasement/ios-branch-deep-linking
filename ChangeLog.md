@@ -1,5 +1,54 @@
 Branch iOS SDK Change Log
 
+- v0.13.5
+  * Updated Xcode 7 example project to work on iOS 7.
+  * Added iAd framework to Swift example so that the Apple Search Ad query works.
+
+- v0.13.1
+  * > Beta Release <
+  * Version strings are now displayed in the testbed apps.
+  * Made sure that Branch callbacks happen on the main thread.
+  * Fixed the Xcode 7 example to work with unit tests.
+  * Fixed content discovery to work consistently.
+  * Updated the Apple Search Ad debug mode campaign name to 'DebugAppleSearchAdsCampaignName'.
+
+- v0.13.0
+  * > Beta Release <
+  * All the unit tests now compile, run, and pass.
+  * Added the `branchAPIURL` property to `BNCPreferenceHelper` instances.
+      This property can be set when testing with mocking frameworks like WireMock, where canned
+      server responses are needed for functional testing scenarios.
+
+      This property can be set before Branch is initialized.  For example:
+      ```objc
+      [BNCPreferenceHelper preferenceHelper].branchAPIURL = @"http://localhost/branch-mock";
+      [[Branch getInstance] initSessionWithLaunchOptions:launchOptions];
+      ```
+
+      Be sure to use the Branch production API URL in production apps!
+
+- v0.12.30
+  * Fixed some rare app crashes in BranchOpenRequest due to a race condition.
+  * Prevent a crash by making a deep copy of dictionary before merging entries. (#573)
+  * Removed NSLog statements added for debugging. (#572)
+  * Content Discovery Updates (#571)
+    - Adding referred link from response.
+      Adding referred link from response in case available.
+      Support non-app links click with content discovery.
+    - Fixed unnecessary "-" char appended to the CD keys.
+    - Fixed a race condition that caused a rare app crash.
+
+- v0.12.29
+  * > Beta Release <
+  * The browser user agent string is now cached for faster SDK startup (AIS-197).
+
+- v0.12.28
+  * > Beta Release <
+  * Added the `getLatestReferringParamsSynchronous` method AIS-8 (#536).
+    - For details see [`getLatestReferringParamsSynchronous`](https://github.com/BranchMetrics/ios-branch-deep-linking#retrieve-session-install-or-open-parameters)
+      in the README.md documentation.
+  * Improved the SDK responsiveness when getting the browserUserAgentString.
+
 - v0.12.27
   * Fixed a bug were Facebook and Apple Search Ad attribution weren't checked correctly.
     Facebook would get checked first, and Apple Search Ads wouldn't get checked (INTENG-3137).

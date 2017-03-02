@@ -33,7 +33,7 @@ NSString *type = @"some type";
 @property (weak, nonatomic) IBOutlet UITextField *branchLinkTextField;
 @property (weak, nonatomic) IBOutlet UILabel *pointsLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
-
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 @property (strong, nonatomic) BranchUniversalObject *branchUniversalObject;
 
 @end
@@ -44,13 +44,18 @@ NSString *type = @"some type";
 
 - (void)viewDidLoad {
     [[UITableViewCell appearance] setBackgroundColor:[UIColor clearColor]];
-    [self.branchLinkTextField addTarget:self action:@selector(textFieldFinished:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    [self.branchLinkTextField
+        addTarget:self
+        action:@selector(textFieldFinished:)
+        forControlEvents:UIControlEventEditingDidEndOnExit];
     [super viewDidLoad];
     
-    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
+    UITapGestureRecognizer *gestureRecognizer =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     [self.tableView addGestureRecognizer:gestureRecognizer];
     
-    _branchUniversalObject = [[BranchUniversalObject alloc] initWithCanonicalIdentifier: cononicalIdentifier];
+    _branchUniversalObject =
+        [[BranchUniversalObject alloc] initWithCanonicalIdentifier: cononicalIdentifier];
     _branchUniversalObject.canonicalUrl = canonicalUrl;
     _branchUniversalObject.title = contentTitle;
     _branchUniversalObject.contentDescription = contentDescription;
@@ -58,8 +63,20 @@ NSString *type = @"some type";
     _branchUniversalObject.price = 1000;
     _branchUniversalObject.currency = @"$";
     _branchUniversalObject.type = type;
-    [_branchUniversalObject addMetadataKey:@"deeplink_text" value:[NSString stringWithFormat:
-                                                                   @"This text was embedded as data in a Branch link with the following characteristics:\n\n  canonicalUrl: %@\n  title: %@\n  contentDescription: %@\n  imageUrl: %@\n", canonicalUrl, contentTitle, contentDescription, imageUrl]];
+    [_branchUniversalObject
+        addMetadataKey:@"deeplink_text"
+        value:[NSString stringWithFormat:
+            @"This text was embedded as data in a Branch link with the following characteristics:\n\n"
+             "canonicalUrl: %@\n  title: %@\n  contentDescription: %@\n  imageUrl: %@\n",
+                canonicalUrl, contentTitle, contentDescription, imageUrl]];
+
+    self.versionLabel.text =
+        [NSString stringWithFormat:@"v %@ / %@ / %@",
+            [UIDevice currentDevice].systemVersion,
+            [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+            BNC_SDK_VERSION];
+    [self.versionLabel sizeToFit];
+
    // [self refreshRewardPoints];
 }
 
@@ -100,13 +117,17 @@ NSString *type = @"some type";
 - (IBAction)setUserIDButtonTouchUpInside:(id)sender {
     Branch *branch = [Branch getInstance];
     [branch setIdentity: user_id2 withCallback:^(NSDictionary *params, NSError *error) {
-        if (!error) {
-            NSLog(@"Branch TestBed: Identity Successfully Set%@", params);
-            [self performSegueWithIdentifier:@"ShowLogOutput" sender:[NSString stringWithFormat:@"Identity set to: %@\n\n%@", user_id2, params.description]];
-        } else {
-            NSLog(@"Branch TestBed: Error setting identity: %@", error);
-            [self showAlert:@"Unable to Set Identity" withDescription:error.localizedDescription];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                NSLog(@"Branch TestBed: Identity Successfully Set%@", params);
+                [self performSegueWithIdentifier:@"ShowLogOutput"
+                    sender:[NSString stringWithFormat:@"Identity set to: %@\n\n%@",
+                        user_id2, params.description]];
+            } else {
+                NSLog(@"Branch TestBed: Error setting identity: %@", error);
+                [self showAlert:@"Unable to Set Identity" withDescription:error.localizedDescription];
+            }
+        });
     }];
 }
 
@@ -132,11 +153,13 @@ NSString *type = @"some type";
 }
 
 
-- (IBAction)sendBuyEventButtonTouchUpInside:(id)sender {
+- (IBAction)sendButtonEventButtonTouchUpInside:(id)sender {
     Branch *branch = [Branch getInstance];
-    [branch userCompletedAction:@"buy" withState:nil withDelegate:self];
+    [branch userCompletedAction:@"button_press"
+        withState:@{ @"name": @"button1", @"action": @"alert" }
+        withDelegate:self];
     [self refreshRewardPoints];
-    [self showAlert:@"'buy' event dispatched" withDescription:@""];
+    [self showAlert:@"'button_press' event dispatched" withDescription:@""];
 }
 
 
@@ -144,7 +167,7 @@ NSString *type = @"some type";
     NSDictionary *eventDetails = [[NSDictionary alloc] initWithObjects:@[user_id1, [NSNumber numberWithInt:1], [NSNumber numberWithBool:YES], [NSNumber numberWithFloat:3.14159265359], test_key] forKeys:@[@"name",@"integer",@"boolean",@"float",@"test_key"]];
     
     Branch *branch = [Branch getInstance];
-    [branch userCompletedAction:@"buy" withState:eventDetails];
+    [branch userCompletedAction:@"complex_event" withState:eventDetails];
     [self performSegueWithIdentifier:@"ShowLogOutput" sender:[NSString stringWithFormat:@"Custom Event Details:\n\n%@", eventDetails.description]];
     [self refreshRewardPoints];
 }
@@ -255,9 +278,8 @@ NSString *type = @"some type";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-   // [self refreshRewardPoints];
+    [self refreshRewardPoints];
 }
-
 
 - (void)textFieldFinished:(id)sender {
     [sender resignFirstResponder];
