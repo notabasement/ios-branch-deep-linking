@@ -320,7 +320,7 @@
 #endif
     BOOL isIndexingAvailable = NO;
     Class CSSearchableIndexClass = NSClassFromString(@"CSSearchableIndex");
-    SEL isIndexingAvailableSelector = NSSelectorFromString(@"isIndexingAvailable");
+    SEL isIndexingAvailableSelector = @selector(isIndexingAvailable);
     isIndexingAvailable = ((BOOL (*)(id, SEL))[CSSearchableIndexClass methodForSelector:isIndexingAvailableSelector])(CSSearchableIndexClass, isIndexingAvailableSelector);
     
     if (!isIndexingAvailable) {
@@ -418,20 +418,20 @@
     
     id CSSearchableItemAttributeSetClass = NSClassFromString(@"CSSearchableItemAttributeSet");
     id attributes = [CSSearchableItemAttributeSetClass alloc];
-    SEL initAttributesSelector = NSSelectorFromString(@"initWithItemContentType:");
+    SEL initAttributesSelector = @selector(initWithItemContentType:);
     attributes = ((id (*)(id, SEL, NSString *))[attributes methodForSelector:initAttributesSelector])(attributes, initAttributesSelector, type);
-    SEL setIdentifierSelector = NSSelectorFromString(@"setIdentifier:");
+    SEL setIdentifierSelector = @selector(setIdentifier:);
     ((void (*)(id, SEL, NSString *))[attributes methodForSelector:setIdentifierSelector])(attributes, setIdentifierSelector, spotlightIdentifier);
-    SEL setTitleSelector = NSSelectorFromString(@"setTitle:");
+    SEL setTitleSelector = @selector(setTitle:);
     ((void (*)(id, SEL, NSString *))[attributes methodForSelector:setTitleSelector])(attributes, setTitleSelector, title);
-    SEL setContentDescriptionSelector = NSSelectorFromString(@"setContentDescription:");
+    SEL setContentDescriptionSelector = @selector(setContentDescription:);
     ((void (*)(id, SEL, NSString *))[attributes methodForSelector:setContentDescriptionSelector])(attributes, setContentDescriptionSelector, description);
-    SEL setThumbnailURLSelector = NSSelectorFromString(@"setThumbnailURL:");
+    SEL setThumbnailURLSelector = @selector(setThumbnailURL:);
     ((void (*)(id, SEL, NSURL *))[attributes methodForSelector:setThumbnailURLSelector])(attributes, setThumbnailURLSelector, thumbnailUrl);
-    SEL setThumbnailDataSelector = NSSelectorFromString(@"setThumbnailData:");
+    SEL setThumbnailDataSelector = @selector(setThumbnailData:);
     ((void (*)(id, SEL, NSData *))[attributes methodForSelector:setThumbnailDataSelector])(attributes, setThumbnailDataSelector, thumbnailData);
     // NSUserActivity.CSSearchableItemAttributeSet.contentURL
-    SEL setContentURLSelector = NSSelectorFromString(@"setContentURL:");
+    SEL setContentURLSelector = @selector(setContentURL:);
     ((void (*)(id, SEL, NSURL *))[attributes methodForSelector:setContentURLSelector])(attributes, setContentURLSelector, [NSURL URLWithString:url]);
     
     NSDictionary *userActivityIndexingParams = @{@"title": title,
@@ -502,7 +502,7 @@
     activeViewController.userActivity.userInfo = self.userInfo; // This alone doesn't pass userInfo through
     activeViewController.userActivity.requiredUserInfoKeys = [NSSet setWithArray:self.userInfo.allKeys]; // This along with the delegate method userActivityWillSave, however, seem to force the userInfo to come through.
     activeViewController.userActivity.keywords = params[@"keywords"];
-    SEL setContentAttributeSetSelector = NSSelectorFromString(@"setContentAttributeSet:");
+    SEL setContentAttributeSetSelector = @selector(setContentAttributeSet:);
     ((void (*)(id, SEL, id))[activeViewController.userActivity methodForSelector:setContentAttributeSetSelector])(activeViewController.userActivity, setContentAttributeSetSelector, params[@"attributeSet"]);
 
     [activeViewController.userActivity becomeCurrent];

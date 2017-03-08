@@ -542,8 +542,8 @@ void ForceCategoriesToLoad() {
 - (BOOL)checkAppleSearchAdsAttribution {
     if (self.delayForAppleAds) {
         Class ADClientClass = NSClassFromString(@"ADClient");
-        SEL sharedClient = NSSelectorFromString(@"sharedClient");
-        SEL requestAttribution = NSSelectorFromString(@"requestAttributionDetailsWithBlock:");
+        SEL sharedClient = @selector(sharedClient);
+        SEL requestAttribution = @selector(requestAttributionDetailsWithBlock:);
 
         if (ADClientClass && [ADClientClass instancesRespondToSelector:requestAttribution] &&
             [ADClientClass methodForSelector:sharedClient]) {
@@ -607,7 +607,7 @@ void ForceCategoriesToLoad() {
 - (BOOL)checkFacebookAppLinks {
     if (self.FBSDKAppLinkUtility) {
 
-        SEL fetchDeferredAppLink = NSSelectorFromString(@"fetchDeferredAppLink:");
+        SEL fetchDeferredAppLink = @selector(fetchDeferredAppLink:);
         
         if ([self.FBSDKAppLinkUtility methodForSelector:fetchDeferredAppLink]) {
             void (^__nullable completionBlock)(NSURL *appLink, NSError *error) = ^void(NSURL *__nullable appLink, NSError *__nullable error) {

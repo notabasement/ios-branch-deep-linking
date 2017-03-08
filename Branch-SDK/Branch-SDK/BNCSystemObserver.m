@@ -22,9 +22,9 @@
 
     Class ASIdentifierManagerClass = NSClassFromString(@"ASIdentifierManager");
     if (ASIdentifierManagerClass && !debug) {
-        SEL sharedManagerSelector = NSSelectorFromString(@"sharedManager");
+        SEL sharedManagerSelector = @selector(sharedManager);
         id sharedManager = ((id (*)(id, SEL))[ASIdentifierManagerClass methodForSelector:sharedManagerSelector])(ASIdentifierManagerClass, sharedManagerSelector);
-        SEL advertisingIdentifierSelector = NSSelectorFromString(@"advertisingIdentifier");
+        SEL advertisingIdentifierSelector = @selector(advertisingIdentifier);
         NSUUID *uuid = ((NSUUID* (*)(id, SEL))[sharedManager methodForSelector:advertisingIdentifierSelector])(sharedManager, advertisingIdentifierSelector);
         uid = [uuid UUIDString];
         // limit ad tracking is enabled. iOS 10+
@@ -61,9 +61,9 @@
 + (BOOL)adTrackingSafe {
     Class ASIdentifierManagerClass = NSClassFromString(@"ASIdentifierManager");
     if (ASIdentifierManagerClass) {
-        SEL sharedManagerSelector = NSSelectorFromString(@"sharedManager");
+        SEL sharedManagerSelector = @selector(sharedManager);
         id sharedManager = ((id (*)(id, SEL))[ASIdentifierManagerClass methodForSelector:sharedManagerSelector])(ASIdentifierManagerClass, sharedManagerSelector);
-        SEL advertisingEnabledSelector = NSSelectorFromString(@"isAdvertisingTrackingEnabled");
+        SEL advertisingEnabledSelector = @selector(isAdvertisingTrackingEnabled);
         BOOL enabled = ((BOOL (*)(id, SEL))[sharedManager methodForSelector:advertisingEnabledSelector])(sharedManager, advertisingEnabledSelector);
         return enabled;
     }
