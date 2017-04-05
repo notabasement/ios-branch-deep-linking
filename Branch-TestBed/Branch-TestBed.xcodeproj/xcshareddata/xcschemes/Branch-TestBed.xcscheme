@@ -38,6 +38,9 @@
                BlueprintName = "Branch-SDK-Tests"
                ReferencedContainer = "container:Branch-TestBed.xcodeproj">
             </BuildableReference>
+            <DeviceAppData
+               resolvedPath = "../Simulate-FirstRun.xcappdata">
+            </DeviceAppData>
          </TestableReference>
       </Testables>
       <MacroExpansion>
@@ -50,6 +53,11 @@
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
+         <AdditionalOption
+            key = "NSZombieEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </AdditionalOption>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
