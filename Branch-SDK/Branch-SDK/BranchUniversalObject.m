@@ -247,6 +247,12 @@
 - (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController viewOrBarButtonItem:(id)viewOrBarButtonItem orCompletionWithError:(shareCompletionWithError)completionError {
     [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController viewOrBarButtonItem:viewOrBarButtonItem completion:nil orCompletionWithError:completionError];
 }
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController sourceRect:(CGRect)sourceRect viewOrBarButtonItem:(id)viewOrBarButtonItem completion:(shareCompletion)completion {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController sourceRect:(CGRect)sourceRect viewOrBarButtonItem:viewOrBarButtonItem completion:completion orCompletionWithError:nil];
+}
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController sourceRect:(CGRect)sourceRect viewOrBarButtonItem:(id)viewOrBarButtonItem completionWithError:(shareCompletionWithError)completionError {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController sourceRect:(CGRect)sourceRect viewOrBarButtonItem:viewOrBarButtonItem completion:nil orCompletionWithError:completionError];
+}
 - (void)showShareSheetWithLinkProperties:(nullable BranchLinkProperties *)linkProperties andShareText:(nullable NSString *)shareText fromViewController:(nullable UIViewController *)viewController anchor:(nullable UIBarButtonItem *)anchor completionWithError:(nullable shareCompletionWithError)completion {
     [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController anchor:anchor completion:nil orCompletionWithError:completion];
 }
@@ -256,6 +262,10 @@
 }
 
 - (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController viewOrBarButtonItem:(id)viewOrBarButtonItem completion:(shareCompletion)completion orCompletionWithError:(shareCompletionWithError)completionError {
+    [self showShareSheetWithLinkProperties:linkProperties andShareText:shareText fromViewController:viewController sourceRect:CGRectNull viewOrBarButtonItem:viewOrBarButtonItem completion:completion orCompletionWithError:completionError];
+}
+
+- (void)showShareSheetWithLinkProperties:(BranchLinkProperties *)linkProperties andShareText:(NSString *)shareText fromViewController:(UIViewController *)viewController sourceRect:(CGRect)sourceRect viewOrBarButtonItem:(id)viewOrBarButtonItem completion:(shareCompletion)completion orCompletionWithError:(shareCompletionWithError)completionError {
     // Log share initiated event
     [self userCompletedAction:BNCShareInitiatedEvent];
     UIActivityItemProvider *itemProvider = [self getBranchActivityItemWithLinkProperties:linkProperties];
@@ -306,7 +316,7 @@
     if (presentingViewController) {
         // Required for iPad/Universal apps on iOS 8+
         if ([presentingViewController respondsToSelector:@selector(popoverPresentationController)]) {
-            shareViewController.popoverPresentationController.sourceView = presentingViewController.view;
+            
             if (viewOrBarButtonItem) {
                 if ([viewOrBarButtonItem isKindOfClass:[UIBarButtonItem class]]) {
                     shareViewController.popoverPresentationController.barButtonItem = viewOrBarButtonItem;
@@ -314,6 +324,9 @@
                     shareViewController.popoverPresentationController.sourceView = viewOrBarButtonItem;
                     shareViewController.popoverPresentationController.sourceRect = ((UIView *)viewOrBarButtonItem).bounds;
                 }
+            } else {
+                shareViewController.popoverPresentationController.sourceView = presentingViewController.view;
+                shareViewController.popoverPresentationController.sourceRect = sourceRect;
             }
         }
         [presentingViewController presentViewController:shareViewController animated:YES completion:nil];
