@@ -151,6 +151,12 @@ typedef NS_ENUM(NSInteger, BranchShareActivityItemType) {
 
 - (void) presentActivityViewControllerFromViewController:(UIViewController*_Nullable)viewController
                                                   anchor:(UIBarButtonItem*_Nullable)anchor {
+    [self presentActivityViewControllerFromViewController:viewController sourceRect:CGRectNull viewOrBarButtonItem:anchor];
+}
+
+- (void) presentActivityViewControllerFromViewController:(UIViewController*_Nullable)viewController
+                                              sourceRect:(CGRect)sourceRect
+                                     viewOrBarButtonItem:(id _Nullable)viewOrBarButtonItem {
 
     UIActivityViewController *shareViewController =
         [[UIActivityViewController alloc]
@@ -203,8 +209,19 @@ typedef NS_ENUM(NSInteger, BranchShareActivityItemType) {
     // Required for iPad/Universal apps on iOS 8+
     if ([presentingViewController respondsToSelector:@selector(popoverPresentationController)]) {
         shareViewController.popoverPresentationController.sourceView = presentingViewController.view;
-        if (anchor) {
-            shareViewController.popoverPresentationController.barButtonItem = anchor;
+        if (!CGRectIsNull(sourceRect) && !CGRectIsEmpty(sourceRect)) {
+            shareViewController.popoverPresentationController.sourceRect = sourceRect;
+        }
+        
+        if (viewOrBarButtonItem) {
+            if ([viewOrBarButtonItem isKindOfClass:[UIBarButtonItem class]]) {
+                shareViewController.popoverPresentationController.barButtonItem = viewOrBarButtonItem;
+            } else if ([viewOrBarButtonItem isKindOfClass:[UIView class]]) {
+                shareViewController.popoverPresentationController.sourceView = viewOrBarButtonItem;
+                if (CGRectIsNull(sourceRect) || CGRectIsEmpty(sourceRect)) {
+                    shareViewController.popoverPresentationController.sourceRect = ((UIView *)viewOrBarButtonItem).bounds;
+                }
+            }
         }
     }
     [presentingViewController presentViewController:shareViewController animated:YES completion:nil];

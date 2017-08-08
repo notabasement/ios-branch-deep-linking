@@ -81,6 +81,10 @@ Presents a UIActivityViewController that shares the Branch link.
 - (void) presentActivityViewControllerFromViewController:(UIViewController*_Nullable)viewController
                                                   anchor:(UIBarButtonItem*_Nullable)anchor;
 
+- (void) presentActivityViewControllerFromViewController:(UIViewController*_Nullable)viewController
+                                              sourceRect:(CGRect)sourceRect
+                                     viewOrBarButtonItem:(id _Nullable)viewOrBarButtonItem;
+
 ///The title for the share sheet.
 @property (nonatomic, strong) NSString*_Nullable title;
 
