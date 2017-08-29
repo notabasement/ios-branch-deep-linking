@@ -5,7 +5,7 @@
 //  Created by Alex Austin on 6/5/14.
 //  Copyright (c) 2014 Branch Metrics. All rights reserved.
 //
-#import "Branch/Branch.h"
+#import "Branch.h"
 #import "AppDelegate.h"
 #import "LogOutputViewController.h"
 #import "NavigationController.h"
@@ -20,6 +20,7 @@
 
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    BNCLogSetDisplayLevel(BNCLogLevelAll);
 
     // Set Branch.useTestBranchKey = YES; to have Branch use the test key that's in the app's
     // Info.plist file. This makes Branch test against your test environment (As shown in the Branch
@@ -28,16 +29,14 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Branch.useTestBranchKey = YES;  // Make sure to comment this line out for production apps!!!
     Branch *branch = [Branch getInstance];
 
-    // Comment / un-comment to toggle debugging:
-    // [branch setDebug];
+    // Comment out (for match guarantee testing) / or un-comment to toggle debugging:
+    [branch setDebug];
 
     // Check for Apple Search Ad attribution:
-    [branch delayInitToCheckForSearchAds];
+    // [branch delayInitToCheckForSearchAds];
     
     // Turn this on to debug Apple Search Ads.  Should not be included for production.
     // [branch setAppleSearchAdsDebugMode];
-    
-    [branch setWhiteListedSchemes:@[@"branchtest"]];
     
     /**
      * // Optional. Use if presenting SFSafariViewController as part of onboarding. Cannot use with setDebug.
@@ -166,7 +165,7 @@ continueUserActivity:(NSUserActivity *)userActivity
         [application registerForRemoteNotificationTypes:
             (UIRemoteNotificationTypeNewsstandContentAvailability| UIRemoteNotificationTypeBadge |
                 UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-        #pragma clang diagnostic push
+        #pragma clang diagnostic pop
     }
 }
 

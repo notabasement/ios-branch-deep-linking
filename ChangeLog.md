@@ -1,5 +1,66 @@
 Branch iOS SDK Change Log
 
+- v0.17.10
+  * _*Master Release*_ - August 23, 2017
+  * Don't do cookie based matching in iOS 11 (AIS-307, GH-#681).
+  * Fix an initialization problem in iOS 8.
+    Logging was calling a protocol method which would lock up initialization on iOS 8 (GH-#694).
+
+- v0.17.9
+  * _*Master Release*_ - August 15, 2017
+  * Fixed the Branch.framework static library build. How long was this broken? A year? Since 12.2?
+    Good grief.
+
+- v0.17.7
+  * _*Master Release*_ - August 14, 2017
+  * Fixed some header inclusion and the framework upload.
+
+- v0.17.6
+  * _*Master Release*_ - August 11, 2017
+  * Added a check for buffer length before reading a pointer.
+
+- v0.17.5
+  * _*Master Release*_ - August 8, 2017
+  * Fixed Carthage build.
+
+- v0.17.3
+  * _*Master Release*_ - August 8, 2017
+
+- v0.17.2
+  * _*Beta Release*_ - August 4, 2017
+  * Support de-duping our NSUserActivity-based indexed Spotlight search items (With caveats. See
+    GitHub PR #668).
+  * Added a guard to prevent a crash bug from when bad data was accidentally passed back from the
+    Branch servers (GitHub #672).
+  * Fixed a crash bug that sometimes occurred when logging to the Branch log file (GitHub #661).
+  * Added 'com.googleusercontent.apps' as an oauth scheme (GitHub #678).
+  * Used address sanitizer & thread sanitizer to find and fix several thread and memory errors.
+  * Escape extra html tags in dynamic Branch links (INTENG-3466).
+
+- v0.17.1
+  * _*Beta Release*_ - August 1, 2017
+  * Added support for using a provided network stack instead of the standard Branch SDK network calls.
+    See the documentation in the `BNCNetworkServiceProtocol.h` file for details.
+  * Added certificate pining for branch.io server calls.
+  * Removed support for iOS 6 networking.
+  * The iOS Security.framework is now required for linking with the Branch SDK.
+  * Cleaned up NSError error messages.
+  * Added support for localization of error messages. Send us your localizations!
+  * Added Russian translation of user facing SDK messages and errors.
+
+- v0.17.0
+  * _*Beta Release*_ - July 24, 2017
+  * Added Crashlytics reporting enhancements (#653)
+    - The Branch SDK version number is now recorded in Crashlytics logs.
+    - The Branch deviceFingerprintId is also recorded in Crashlytics by default. This is optional.
+    - Added BNCCrashlyticsWrapper.
+    - Added and updated unit tests.
+  * BNCDeviceInfo thread safety to prevent crash during initialization (GitHub #654 & #656).
+    - Updated all instance properties on BNCDeviceInfo to be totally thread-safe.
+    - Made all BNCDeviceInfo properties readonly. Lazy initialization of vendorId due to idiosyncrasy
+      of UIDevice.identifierForVendor.
+    - Separated messages to deviceInfo from messages to self in a troublesome stack frame.
+
 - v0.16.2
   * *Master Release* - July 13, 2017
   * Decoupled logic for determining app language and app country code.
